@@ -1,24 +1,19 @@
 const Joi = require("joi");
 
-const createContactSchema = Joi.object({
+export const createContactSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().email().required(),
   phone: Joi.string().required(),
+  favorite: Joi.boolean().optional(),
 });
 
-const updateContactSchema = Joi.object({
-  name: Joi.string(),
-  email: Joi.string().email(),
-  phone: Joi.string(),
-}).custom((value, helpers) => {
-  if (!(value.name || value.email || value.phone)) {
-    throw new Joi.ValidationError(
-      "Body must have at least one field",
-      [{}, { message: "Body must have at least one field" }],
-      value
-    );
-  }
-  return value;
-}, "custom validation");
+export const updateContactSchema = Joi.object({
+  name: Joi.string().optional(),
+  email: Joi.string().email().optional(),
+  phone: Joi.string().optional(),
+  favorite: Joi.boolean().optional(),
+});
 
-module.exports = { createContactSchema, updateContactSchema };
+export const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});

@@ -4,7 +4,10 @@ import cors from "cors";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import mongoose from "mongoose";
-import "dotenv/config";
+// import "dotenv/config";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
@@ -38,3 +41,5 @@ mongoose.connect(process.env.DB_HOST)
  })
 
  export default app;
+
+ 

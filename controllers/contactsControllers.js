@@ -65,12 +65,15 @@ export const updateContact = ctrlWraper(async (req, res) => {
 export const updateStatusContact = ctrlWraper(async (req, res) => {
   const { id } = req.params;
   const { favorite } = req.body;
+  const { _id: owner } = req.user;
+  const options = { new: true };
 
   const updatedFavorite = await contactsServices.updateStatusContact(
       id,
       { favorite },
-      { new: true }
-  );
+      owner,
+      options
+    );
   
   if (!updatedFavorite) {
     return handleNotFound(req, res);

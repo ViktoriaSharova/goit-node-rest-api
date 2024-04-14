@@ -4,8 +4,8 @@ import cors from "cors";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import mongoose from "mongoose";
-// import "dotenv/config";
-import dotenv from "dotenv";
+import "dotenv/config";
+
 import authRouter from "./routes/authRouter.js";
 
 dotenv.config();

@@ -12,9 +12,9 @@
     "express": "^4.18.2",
     "joi": "^17.11.0",
     "jsonwebtoken": "^9.0.2",
-    "module": "^1.2.5",
     "mongoose": "^8.2.4",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "nanoid": "^3.3.4"
   },
   "devDependencies": {

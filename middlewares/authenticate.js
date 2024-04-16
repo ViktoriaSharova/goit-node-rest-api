@@ -1,25 +1,33 @@
 import jwt from "jsonwebtoken";
-import User from "../models/authModel.js";
+import { findUser } from "../services/authServices.js";
 import HttpError from "../helpers/HttpError.js";
 
 const {JWT_SECRET} = process.env;
 
-export const authanticate = async (req, res, next) => {
-    const { authorization = "" } = req.headers;
+const authenticate = async (req, res, next) => {
+    const { authorization } = req.headers;
+    if (!authorization) {
+      return next(HttpError(401, "Not authorized"));
+    }
     const [bearer, token] = authorization.split(" ");
     if (bearer !== "Bearer") {
-        next(HttpError(401));
+      return next(HttpError(401));
     }
+  
     try {
-        const { id } = jwt.verify(token, JWT_SECRET);
-        const user = await User.findById(id);
-        if (!user || !user.token || user.token !== token) {
-        next(HttpError(401));
-        }
-        req.user = user;
-        next();
+      const { id } = jwt.verify(token, JWT_SECRET);
+      const user = await findUser({ _id: id });
+      if (!user) {
+        return next(HttpError(401), "User not found");
+      }
+      if (!user.token) {
+        return next(HttpError(401, "Token invalid"));
+      }
+      req.user = user;
+      next();
+    } catch (error) {
+      next(HttpError(401, error.message));
     }
-    catch {
-        next(HttpError(401));
-    }
-}
+  };
+  
+  export default authenticate;

@@ -1,30 +1,37 @@
-import mongoose from "mongoose";
+import { Schema, model } from "mongoose";
+import { handleSaveError, setUpdateSetting } from "../helpers/errorHandlers.js";
 
-export const emailRegexp = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+import { emailRegexp } from "../constant/user-constant.js";
 
-const userSchema = new mongoose.Schema({
-  password: {
+const userSchema = new Schema(
+    {
+      password: {
         type: String,
-        required: [true, 'Password is required'],
-        minlength: 6,
-  },
-    email: {
+        required: [true, "Password is required"],
+      },
+      email: {
         type: String,
-        match: [emailRegexp, 'Invalid email format'],
-        required: [true, 'Email is required'],
+        required: [true, "Email is required"],
+        match: emailRegexp,
         unique: true,
-    },
-    subscription: {
+      },
+      subscription: {
         type: String,
         enum: ["starter", "pro", "business"],
-        default: "starter"
-    },
-    token: {
+        default: "starter",
+      },
+      token: {
         type: String,
         default: null,
-    }
-}, { versionKey: false });
-
-const User = mongoose.model('User', userSchema);
-
-export default User;
+      },
+    },
+    { versionKey: false, timestamps: true }
+  );
+  
+  userSchema.post("save", handleSaveError);
+  userSchema.pre("findOneAndUpdate", setUpdateSetting);
+  userSchema.post("user", handleSaveError);
+  
+  const User = model("user", userSchema);
+  
+  export default User;

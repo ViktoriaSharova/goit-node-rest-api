@@ -1,3 +1,11 @@
-export function handleNotFound(req, res) {
-    return res.status(404).json({ message: 'Not found' });
-  }
+export const handleSaveError = (error, data, next) => {
+  const { name, code } = error;
+  error.status = name === "MongoServerError" && code === 1000 ? 409 : 400;
+  next();
+};
+
+export const setUpdateSetting = function (next) {
+  this.options.new = true;
+  this.options.runValidators = true;
+  next();
+};

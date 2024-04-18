@@ -1,26 +1,37 @@
-import mongoose from "mongoose";
-import Joi from "joi";
+import { Schema, model } from "mongoose";
+import { handleSaveError, setUpdateSetting } from "../helpers/errorHandlers.js";
 
-const { Schema } = mongoose;
-
-const contactSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Set name for contact'],
+const contactSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Set name for contact"],
+    },
+    email: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "user",
+    },
   },
-    email: String,
-    phone: String,
-  favorite: {
-    type: Boolean,
-    default: false,
-  },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  }
-}, { versionKey: false });
+  { versionKey: false, timestamps: true }
+);
 
-const Contact = mongoose.model('Contact', contactSchema);
+contactSchema.post("save", handleSaveError);
+
+contactSchema.pre("findOneAndUpdate", setUpdateSetting);
+
+contactSchema.post("findOneAndUpdate", handleSaveError);
+
+const Contact = model("contact", contactSchema);
 
 export default Contact;

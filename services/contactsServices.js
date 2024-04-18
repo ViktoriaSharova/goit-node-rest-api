@@ -1,13 +1,13 @@
 import Contact from "../models/contactModel.js";
 
-export const getAllContacts = (owner, options) => Contact.find({ owner }).skip((options.page - 1) * options.limit).limit(options.limit);
+export const listContacts = (filter = {}, setting = {}) => Contact.find(filter, "-createdAt -updateAt", setting).populate("owner", "username email");
 
-export const getOneContact = (id, owner) => Contact.findOne({ _id: id, owner });
+export const addContact = (data) => Contact.create(data);
 
-export const deleteContact = (id, owner) => Contact.findOneAndDelete({ _id: id, owner });
+export const getContact = (filter) => Contact.findOne(filter);
 
-export const createContact = (contactData) => Contact.create(contactData);
+export const updateContact = (filter, data) => Contact.findOneAndUpdate(filter, data);
 
-export const updateContact = (id, body, owner, options) => Contact.findOneAndUpdate({ _id: id, owner }, body, options);
+export const removeContact = (filter) => Contact.findOneAndDelete(filter);
 
-export const updateStatusContact = (id, body, owner, options) => Contact.findOneAndUpdate({ _id: id, owner: owner }, body, options);
+export const updateStatusContact = (filter, data) => Contact.findOneAndUpdate(filter, data);

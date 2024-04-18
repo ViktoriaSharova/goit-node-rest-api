@@ -3,7 +3,7 @@ import { handleSaveError, setUpdateSetting } from "../helpers/errorHandlers.js";
 
 import { emailRegexp } from "../constant/user-constant.js";
 
-const userSchema = new Schema(
+const userSchema  = new Schema(
     {
       password: {
         type: String,

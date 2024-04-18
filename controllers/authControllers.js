@@ -2,9 +2,8 @@ import * as authServices from "../services/authServices.js";
 import ctrlWraper from "../helpers/ctrlWraper.js";
 import HttpError from "../helpers/HttpError.js";
 import bcrypt from "bcrypt";
-// import { userSignupSchema, userSigninSchema } from "../schemas/authSchemas.js";
 import jwt from "jsonwebtoken";
-// import User from "../models/authModel.js";
+import "dotenv/config";
 
 const { JWT_SECRET } = process.env;
 

@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import { findUser } from "../services/authServices.js";
 import HttpError from "../helpers/HttpError.js";
+import "dotenv/config";
 
-const {JWT_SECRET} = process.env;
+const { JWT_SECRET } = process.env;
 
 const authenticate = async (req, res, next) => {
     const { authorization } = req.headers;
@@ -11,7 +12,7 @@ const authenticate = async (req, res, next) => {
     }
     const [bearer, token] = authorization.split(" ");
     if (bearer !== "Bearer") {
-      return next(HttpError(401));
+      return next(HttpError(401, "Invalid token format"));
     }
   
     try {

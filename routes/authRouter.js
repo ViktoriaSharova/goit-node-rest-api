@@ -3,6 +3,7 @@ import authControllers from "../controllers/authControllers.js";
 import { userSigninSchema, userSignupSchema } from "../schemas/authSchemas.js";
 import validateBody  from "../helpers/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 
 
@@ -16,6 +17,8 @@ authRouter.post("/login", validateBody(userSigninSchema), authControllers.login)
 authRouter.get("/current", authenticate, authControllers.getCurrent);
 
 authRouter.post("/logout", authenticate, authControllers.logout);
+
+authRouter.patch("/avatars", authenticate, upload.single("avatar"), authControllers.changeAvatar);
 
 
 export default authRouter;

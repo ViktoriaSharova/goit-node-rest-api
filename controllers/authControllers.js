@@ -4,8 +4,14 @@ import HttpError from "../helpers/HttpError.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import fs from "fs/promises";
+import path from "path";
+import User from "../models/authModel.js";
+
 
 const { JWT_SECRET } = process.env;
+
+const avatarsPath = path.resolve("public", "avatars");
 
 const register = async (req, res) => {
     const { email, password } = req.body;
@@ -71,12 +77,38 @@ const register = async (req, res) => {
     const { _id } = req.user;
     await authServices.updateUser(_id, { token: "" });
   
-    res.status(204).json({ message: "No Content" });
+    res.status(204).json({ message: "No Content" }); 
   };
+
+  const changeAvatar = async (req, res) => {
+    const { _id } = req.user;
+    if (!req.file) {
+      throw HttpError(400, "You shoud add an image");
+    }
+    
+  const { path: oldPath, filename } = req.file;
+   const newPath = path.join(avatarsPath, filename);
+    await fs.rename(oldPath, newPath);
+    
+    try {
+      await Jimp.read(newPath).then((image) => {
+        return image.resize(250, 250).writeAsync(newPath);});} 
+        catch (error) {
+        console.error(error);
+      }
+    
+  const avatarURL = path.join("avatars", filename);
+    await User.findByIdAndUpdate(_id, { avatarURL });
+    res.json({ avatarURL });
+    };
+
+
+
   
   export default {
     register: ctrlWraper(register),
     login: ctrlWraper(login),
     getCurrent: ctrlWraper(getCurrent),
     logout: ctrlWraper(logout),
+    changeAvatar: ctrlWraper(changeAvatar),
   };

@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 import fs from "fs/promises";
 import path from "path";
+import gravatar from "gravatar";
+import Jimp from "jimp";
 import User from "../models/authModel.js";
 
 
@@ -19,18 +21,21 @@ const register = async (req, res) => {
     if (user) {
       throw HttpError(409, "Email already in use");
     }
-  
+    
+    const avatarURL = gravatar.url(email);
     const hashPassword = await bcrypt.hash(password, 10);
   
     const newUser = await authServices.register({
       ...req.body,
       password: hashPassword,
+      avatarURL,
     });
   
     res.status(201).json({
       user: {
         email: newUser.email,
         subscription: newUser.subscription,
+        avatarURL: newUser.avatarURL,
       },
     });
   };
